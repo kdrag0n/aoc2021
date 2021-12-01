@@ -17,15 +17,22 @@ total = 0
 result = 0
 other = 0
 
-last = -1
+last3 = []
+last_sum3 = -1
 
 while True:
     for l in lines:
         val = int(l.split()[0])
+        print(val)
+        last3.append(val)
+        if len(last3) > 3:
+            last3 = last3[1:]
+        print(f'    last={last3}')
 
-        if last != -1 and val > last:
+        lsum = sum(last3) if len(last3) == 3 else -1
+        if last_sum3 != -1 and lsum > last_sum3:
             total += 1
-        last = val
+        last_sum3 = lsum
 
     break
 
