@@ -19,6 +19,7 @@ other = 0
 
 depth = 0
 x = 0
+aim = 0
 
 while True:
     for l in lines:
@@ -27,10 +28,11 @@ while True:
         num = int(num)
         if action == 'forward':
             x += num
+            depth += aim * num
         elif action == 'down':
-            depth += num
+            aim += num
         elif action == 'up':
-            depth -= num
+            aim -= num
 
         if False:
             total += 1
