@@ -28,6 +28,14 @@ for bstr in '\n'.join(lines[2:]).strip().split('\n\n'):
     boards += [board]
     #print(bstr + '\n\n\n')
 
+remove_boards = set()
+def hash_board(board):
+    n = 1
+    for row in board:
+        for col in row:
+            n += col[0]
+            n *= 31
+    return n
 def loop():
     global winning
     global lastnum
@@ -42,14 +50,22 @@ def loop():
                         row[ci] = (col, True)
         
         for board in boards:
+            if hash_board(board) in remove_boards:
+                continue
             for row in board:
                 if all(marked for col, marked in row):
                     print('WIN BY ROW')
-                    winning = board
-                    outer = True
-                    lastnum = num
-                    return
+                    if (len(boards) - len(remove_boards)) > 1:
+                        remove_boards.add(hash_board(board))
+                        break
+                    else:
+                        winning = board
+                        outer = True
+                        lastnum = num
+                        return
             
+            if hash_board(board) in remove_boards:
+                continue
             for xi in range(5):
                 n = 0
                 for ri in range(5):
@@ -57,10 +73,14 @@ def loop():
                         n += 1
                 if n == 5:
                     print('WIN BY COL')
-                    winning = board
-                    outer = True
-                    lastnum = num
-                    return
+                    if (len(boards) - len(remove_boards)) > 1:
+                        remove_boards.add(hash_board(board))
+                        break
+                    else:
+                        winning = board
+                        outer = True
+                        lastnum = num
+                        return
 
 loop()
 s = 0
