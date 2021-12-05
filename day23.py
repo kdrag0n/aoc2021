@@ -5,13 +5,10 @@ import sys
 def ints(itr):
     return [int(i) for i in itr]
 
-with open(sys.argv[1], "r") as f:
-    lines = [l for l in f.read().split("\n") if l]
+with open(sys.argv[1], 'r') as f:
+    lines = [l for l in f.read().strip().split('\n')]
 
 
-
-ilist = []
-imap = {}
 
 total = 0
 result = 0
@@ -28,6 +25,6 @@ while True:
 
 
 
-print(f"Total: {total}")
-print(f"Result: {result}")
-print(f"Other: {other}")
+print(f'Total: {total}')
+print(f'Result: {result}')
+print(f'Other: {other}')
