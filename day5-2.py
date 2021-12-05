@@ -94,7 +94,7 @@ for (x1, y1), (x2, y2) in lines:
             if (x2 - x1) < 0:
                 xoff *= -1
             x = x1 + xoff
-            y = y1 + xoff
+            y = y1 + yoff
             print('  fill', x, y, 'xoff=', xoff, 'yoff=', yoff)
             grid[y][x] += 1
 
