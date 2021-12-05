@@ -86,23 +86,23 @@ for (x1, y1), (x2, y2) in lines:
             grid[y1][x] += 1
     else:
         print(' diag', (x1, y1), (x2, y2))
-        # xoff = 0
-        # for xoff in range(abs(x2 - x1) + 1):
-        #     yoff = xoff
-        #     if (y2 - y1) < 0:
-        #         yoff *= -1
-        #     if (x2 - x1) < 0:
-        #         xoff *= -1
-        #     x = x1 + xoff
-        #     y = y1 + xoff
-        #     print('  fill', x, y, 'xoff=', xoff, 'yoff=', yoff)
-        #     grid[y][x] += 1
+        xoff = 0
+        for xoff in range(abs(x2 - x1) + 1):
+            yoff = xoff
+            if (y2 - y1) < 0:
+                yoff *= -1
+            if (x2 - x1) < 0:
+                xoff *= -1
+            x = x1 + xoff
+            y = y1 + xoff
+            print('  fill', x, y, 'xoff=', xoff, 'yoff=', yoff)
+            grid[y][x] += 1
 
-        #     if x2 > x1:
-        #         xoff += 1
-        #     else:
-        #         xoff -= 1
-        draw_line(x1, y1, x2, y2)
+            if x2 > x1:
+                xoff += 1
+            else:
+                xoff -= 1
+        #draw_line(x1, y1, x2, y2)
 
 ov = 0
 for row in grid:
