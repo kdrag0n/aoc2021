@@ -15,6 +15,11 @@ if [[ ! -f in/$num ]]; then
     curl -H "Cookie: session=$(cat .token)" "https://adventofcode.com/2021/day/$num/input" | tee in/$num
 fi
 
+if [[ "$(cat in/$num)" == "Please don't repeatedly request this endpoint before it unlocks! The calendar countdown is synchronized with the server time; the link will be enabled on the calendar the instant this puzzle becomes available." ]]; then
+    rm -f in/$num
+    exit
+fi
+
 if [[ ! -f samples/$num ]]; then
     touch samples/$num
     code samples/$num
