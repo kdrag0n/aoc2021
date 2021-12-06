@@ -15,7 +15,10 @@ if [[ ! -f in/$num ]]; then
     curl -H "Cookie: session=$(cat .token)" "https://adventofcode.com/2021/day/$num/input" | tee in/$num
 fi
 
-touch samples/$num
+if [[ ! -f samples/$num ]]; then
+    touch samples/$num
+    code samples/$num
+fi
 
 if [[ -z "$problem" ]]; then
     ./day$num.py in/$num
