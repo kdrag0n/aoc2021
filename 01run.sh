@@ -20,6 +20,10 @@ if [[ ! -f samples/$num ]]; then
     code samples/$num
 fi
 
+if diff -q day$num.py 00_template/template.py > /dev/null; then
+    code day$num.py
+fi
+
 if [[ -z "$problem" ]]; then
     ./day$num.py in/$num
 else
