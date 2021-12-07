@@ -18,9 +18,12 @@ other = 0
 
 m = 1e18
 for tgt in range(1, max(in_nums)+1):
+    if tgt%10 == 0:
+        print(tgt)
     d = 0
     for crab in in_nums:
-        d += abs(crab - tgt)
+        for i in range(1, abs(crab - tgt)+1):
+            d += i
     if d < m:
         m = d
 
