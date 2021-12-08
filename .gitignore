@@ -1,3 +1,5 @@
 .token
 in/
 samples/
+venv/
+bits/
