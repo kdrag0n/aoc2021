@@ -3,3 +3,4 @@ in/
 samples/
 venv/
 bits/
+.vscode/
