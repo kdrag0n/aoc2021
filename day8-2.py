@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from z3 import *
+# from z3 import *
 import itertools
 
 def ints(itr):
@@ -75,9 +75,9 @@ while True:
                 #     real_seg = real_segs[i]
                 #     seg_map[cur_seg] = real_seg
         
-        for segs in fnums:
-            if len(segs) in d_segs_len:
-                total += 1
+        # for segs in fnums:
+        #     if len(segs) in d_segs_len:
+        #         total += 1
         # sv = Solver()
         # for cur_segs, real_segs in segs_maps.items():
         #     conds = []
@@ -111,6 +111,11 @@ while True:
                 except KeyError:
                     continue
                 break
+        ds = []
+        for segs in fnums:
+            res_segs = [seg_map[s] for s in segs]
+            d = d_segs_inv[tuple(sorted(res_segs))]
+            ds += [d]
         print(seg_map)
         # for seg in list('abcdefg'):
         #     if seg not in seg_map:
@@ -121,6 +126,10 @@ while True:
     break
 
 
+for out in outs:
+    print(out)
+    dec = int(''.join(map(str, out)))
+    total += dec
 
 print(f'Total: {total}')
 print(f'Result: {result}')
