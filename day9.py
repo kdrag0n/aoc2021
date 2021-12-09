@@ -15,16 +15,32 @@ total = 0
 result = 0
 other = 0
 
+grid=[]
 while True:
     for l in file_lines:
-        l1, l2 = l.split()
-
-        if False:
-            total += 1
+        vals = [int(x) for x in list(l)]
+        grid += [vals]
 
     break
 
+lows=[]
+for y, row in enumerate(grid):
+    for x, cell in enumerate(row):
+        pts = [
+            (x, y-1),
+            (x, y+1),
+            (x-1, y),
+            (x+1, y),
+        ]
+        adjs = []
+        for x, y in pts:
+            if x >= 0 and x < len(row) and y >= 0 and y < len(grid):
+                adjs += [grid[y][x]]
+        if all(cell < adj for adj in adjs):
+            lows += [cell]
 
+print(lows)
+print(sum(x+1 for x in lows))
 
 print(f'Total: {total}')
 print(f'Result: {result}')
