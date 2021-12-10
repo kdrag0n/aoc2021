@@ -18,32 +18,37 @@ other = 0
 opn_to_cls = {'(': ')', '[': ']', '{': '}', '<': '>'}
 cls_to_opn = {v: k for k, v in opn_to_cls.items()}
 scores = {
-    ')': 3,
-    ']': 57,
-    '}': 1197,
-    '>': 25137
+    ')': 1,
+    ']': 2,
+    '}': 3,
+    '>': 4
 }
+scrs = []
 while True:
     for l in file_lines:
         stk = []
         syms = list(l)
         err = False
         for sym in syms:
-            print(sym)
             if sym in list('([{<'):
                 stk += [opn_to_cls[sym]]
             elif len(stk) and sym in cls_to_opn:
-                print(stk)
                 if stk[-1] == sym:
                     stk.pop()
                 else:
-                    print('INV', sym)
                     err = True
                     break
-        if err:
-            total += scores[sym]
+        if not err:
+            scr = 0
+            print(''.join(stk[::-1]))
+            for sym in stk[::-1]:
+                scr *= 5
+                scr += scores[sym]
+            scrs += [scr]
     break
 
+import statistics
+print(statistics.median(scrs))
 
 
 print(f'Total: {total}')
