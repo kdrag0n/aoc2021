@@ -5,7 +5,7 @@ set -eufo pipefail
 cd "$(dirname "$0")"
 
 num="$(echo "$1" | tr -d 't')"
-problem="${2:-}"
+problem="${2:-1}"
 
 mkdir -p in
 mkdir -p samples
@@ -29,8 +29,13 @@ if diff -q day$num.py 00_template/template.py > /dev/null; then
     code day$num.py
 fi
 
-if [[ -z "$problem" ]]; then
-    ./day$num.py in/$num
+in_dir=in
+if [[ "${3:-}" == "s"* ]]; then
+    in_dir=samples
+fi
+
+if [[ "$problem" == "1" ]]; then
+    ./day$num.py $in_dir/$num
 else
-    ./day${num}-2.py in/$num
+    ./day${num}-2.py $in_dir/$num
 fi
