@@ -82,8 +82,7 @@ int main(int argc, char **argv) {
             }
         } else {
             for (auto next : graph[last_node]) {
-                if (next == start_hash ||
-                        (next == end_hash && find(path.begin(), path.end(), end_hash) != path.end())) {
+                if (next == start_hash) {
                     continue;
                 }
 
