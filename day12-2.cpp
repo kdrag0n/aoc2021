@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int hash_node(const string& node) {
+static inline int hash_node(const string& node) {
     int hash = 17;
     for (char ch : node) {
         hash *= 31;
@@ -11,11 +11,11 @@ int hash_node(const string& node) {
     return hash;
 }
 
-bool is_small(const string& node) {
+static inline bool is_small(const string& node) {
     return islower(node[0]) && node != "start" && node != "end";
 }
 
-void add_counts(unordered_map<int, int>& counts, const set<int>& nodes, int node) {
+static inline void add_counts(unordered_map<int, int>& counts, const set<int>& nodes, int node) {
     if (!nodes.count(node)) {
         return;
     }
@@ -67,8 +67,8 @@ int main(int argc, char **argv) {
 
     int res_paths = 0;
     unordered_map<int, int> small_counts;
-    deque<vector<int>> paths;
-    paths.emplace_back();
+    queue<vector<int>> paths;
+    paths.emplace();
     paths.front().push_back(start_hash);
 
     while (!paths.empty()) {
@@ -103,14 +103,14 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                paths.push_back(path);
+                paths.push(path);
                 paths.back().push_back(next);
 
                 next_path:;
             }
         }
 
-        paths.pop_front();
+        paths.pop();
     }
 
     cout << '\n' << res_paths << '\n';
