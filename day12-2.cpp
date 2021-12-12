@@ -2,6 +2,10 @@
 
 using namespace std;
 
+static unordered_map<int, vector<int>> graph;
+static set<int> small_nodes;
+static unordered_map<int, int> small_counts;
+
 static inline int hash_node(const string& node) {
     int hash = 17;
     for (char ch : node) {
@@ -10,6 +14,9 @@ static inline int hash_node(const string& node) {
     }
     return hash;
 }
+
+static auto start_hash = hash_node("start");
+static auto end_hash = hash_node("end");
 
 static inline bool is_small(const string& node) {
     return islower(node[0]) && node != "start" && node != "end";
@@ -27,11 +34,52 @@ static inline void add_counts(unordered_map<int, int>& counts, const set<int>& n
     counts[node] += 1;
 }
 
+static void dfs(vector<int>& path, int& res_paths) {
+    auto last_node = path.back();
+
+    if (last_node == end_hash) {
+        res_paths++;
+        if (res_paths % 1000 == 0) {
+            cout << res_paths << '\n';
+        }
+        return;
+    }
+
+    for (auto next : graph[last_node]) {
+        if (next == start_hash) {
+            continue;
+        }
+
+        small_counts.clear();
+        for (auto node : path) {
+            add_counts(small_counts, small_nodes, node);
+        }
+        add_counts(small_counts, small_nodes, next);
+
+        bool used2 = false;
+        bool bad = false;
+        for (auto& [node, ct] : small_counts) {
+            if (ct <= 1) {
+                continue;
+            } else if (ct == 2 && !used2) {
+                used2 = true;
+            } else {
+                bad = true;
+                break;
+            }
+        }
+
+        if (!bad) {
+            vector<int> new_path = path;
+            new_path.push_back(next);
+            dfs(new_path, res_paths);
+        }
+    }
+}
+
 int main(int argc, char **argv) {
     freopen(argv[1], "r", stdin);
 
-    unordered_map<int, vector<int>> graph;
-    set<int> small_nodes;
     while (!cin.eof()) {
         string line;
         cin >> line;
@@ -62,56 +110,9 @@ int main(int argc, char **argv) {
         }
     }
 
-    auto start_hash = hash_node("start");
-    auto end_hash = hash_node("end");
-
     int res_paths = 0;
-    unordered_map<int, int> small_counts;
-    queue<vector<int>> paths;
-    paths.emplace();
-    paths.front().push_back(start_hash);
-
-    while (!paths.empty()) {
-        auto& path = paths.front();
-        auto last_node = path.back();
-
-        if (last_node == end_hash) {
-            res_paths++;
-            if (res_paths % 1000 == 0) {
-                cout << res_paths << '\n';
-            }
-        } else {
-            for (auto next : graph[last_node]) {
-                if (next == start_hash) {
-                    continue;
-                }
-
-                small_counts.clear();
-                for (auto node : path) {
-                    add_counts(small_counts, small_nodes, node);
-                }
-                add_counts(small_counts, small_nodes, next);
-
-                bool used2 = false;
-                for (auto& [node, ct] : small_counts) {
-                    if (ct <= 1) {
-                        continue;
-                    } else if (ct == 2 && !used2) {
-                        used2 = true;
-                    } else {
-                        goto next_path;
-                    }
-                }
-
-                paths.push(path);
-                paths.back().push_back(next);
-
-                next_path:;
-            }
-        }
-
-        paths.pop();
-    }
+    vector<int> start_path{start_hash};
+    dfs(start_path, res_paths);
 
     cout << '\n' << res_paths << '\n';
     return 0;
