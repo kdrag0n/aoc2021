@@ -4,6 +4,7 @@ using namespace std;
 
 static vector<vector<int>> graph;
 static vector<bool> small_nodes;
+static vector<int> node_counts;
 
 static constexpr int start_node = 0;
 static constexpr int end_node = 1;
@@ -12,7 +13,7 @@ static inline bool is_small(const string& node) {
     return islower(node[0]) && node != "start" && node != "end";
 }
 
-static void dfs(vector<int>& node_counts, int& res_paths, int last_node = start_node, bool used2 = false) {
+static void dfs(int& res_paths, int last_node = start_node, bool used2 = false) {
     for (auto next : graph[last_node]) {
         auto next_used2 = used2;
         if (next == start_node) {
@@ -31,9 +32,9 @@ static void dfs(vector<int>& node_counts, int& res_paths, int last_node = start_
             }
         }
 
-        vector<int> new_counts = node_counts;
-        new_counts[next] += 1;
-        dfs(new_counts, res_paths, next, next_used2);
+        node_counts[next]++;
+        dfs(res_paths, next, next_used2);
+        node_counts[next]--;
     }
 }
 
@@ -72,8 +73,9 @@ int main(int argc, char **argv) {
     }
 
     int res_paths = 0;
-    vector<int> start_counts(node_map.size());
-    dfs(start_counts, res_paths);
+    node_counts.resize(node_map.size());
+    node_counts[start_node] = 1;
+    dfs(res_paths);
 
     cout << '\n' << res_paths << '\n';
     return 0;
