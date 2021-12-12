@@ -30,31 +30,43 @@ while True:
 
 
 res_paths = []
-paths = [['start']]
+paths = collections.deque([['start']])
 visited = set()
 while paths:
-    path = paths[0]
-    paths = paths[1:]
+    path = paths.popleft()
     node = path[-1]
     if node == 'end':
-        print('FOUND', path)
+        #print('FOUND', path)
         res_paths += [path]
+        if len(res_paths) % 100 == 0:
+            print(path)
     
         #if node not in visited:
             #visited.add(node)
     else:
         for p in [path + [n] for n in graph[node]]:
             smalls = collections.defaultdict(lambda: 0)
+            all_c = collections.defaultdict(lambda: 0)
             for n in path:
+                all_c[n] += 1
                 if n != 'start' and n != 'end' and all(c.islower() for c in n):
                     smalls[n] += 1
-            #print(smalls    )
-            if sum((1 if n == 'start' else 0) for n in path) > 1:
+            #print(smalls)
+            if all_c['start'] > 1 or all_c['end'] > 1:
                 continue
-            if sum((1 if n == 'end' else 0) for n in path) > 1:
-                continue
-            if all(c < 2 for c in smalls.values()):
-                paths += [p]
+            cused = False
+            bad = False
+            for c in smalls.values():
+                if c <= 1:
+                    continue
+                elif c == 2 and not cused:
+                    cused = True
+                else:
+                    bad = True
+                    break
+            #ov2 = sum((1 if c > 2 else 0) for c in smalls.values())
+            if not bad:
+                paths.append(p)
 
 print(len(res_paths))
 print(f'Total: {total}')
