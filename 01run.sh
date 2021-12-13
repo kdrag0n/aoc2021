@@ -35,7 +35,7 @@ if [[ "${3:-}" == "s"* ]]; then
 fi
 
 if [[ "$problem" == "1" ]]; then
-    ./day$num.py $in_dir/$num
+    pypy3 day$num.py $in_dir/$num
 else
-    ./day${num}-2.py $in_dir/$num
+    pypy3 day${num}-2.py $in_dir/$num
 fi
