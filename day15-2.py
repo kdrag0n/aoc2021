@@ -27,6 +27,23 @@ while True:
             total += 1
 
     break
+
+tiled = [[0] * len(grid[0]) * 5 for x in range(len(grid) * 5)]
+for r in tiled:
+    print(''.join(map(str, r)))
+for tx in range(5):
+    for ty in range(5):
+        st_x = tx * len(grid[0])
+        st_y = ty * len(grid)
+        for gy in range(len(grid)):
+            for gx in range(len(grid[0])):
+                nv = grid[gy][gx] + tx + ty
+                while nv > 9:
+                    nv -= 9
+                tiled[st_y + gy][st_x + gx] = nv
+grid = tiled
+for r in grid:
+    print(''.join(map(str, r)))
 import collections
 graph = collections.defaultdict(list)
 nodes = {}
@@ -52,10 +69,10 @@ for y in range(len(grid)):
         adjs = []
         node = nodes[(x, y)]
         for px, py in pts:
-            if px >= 0 and px < len(row) and py >= 0 and py < len(grid):
+            if px >= 0 and px < len(grid[0]) and py >= 0 and py < len(grid):
                 neigh = nodes[(px, py)]
                 graph[node] += [neigh]
-print(graph)
+# print(graph)
 
 # heap = []
 # dist = {n: 2147483647 for n in nodes.values()}
