@@ -45,60 +45,89 @@ BITS = {
 }
 for ch in file_lines[0]:
     root_pkt += [x == '1' for x in BITS[ch]]
+#root_pkt = root_pkt[:-6]
 print(bin(bools_to_num(root_pkt)))
 vers = 0
 def parse_pkt(pkt):
     global vers
-    print('inv - PKT', bin(bools_to_num(pkt)))
+    orig_len = len(pkt)
+    print('inv - PKT', ''.join('1' if x else '0' for x in pkt))
     pkt_ver = bools_to_num(pkt[:3])
     pkt_id = bools_to_num(pkt[3:6])
     payload = pkt[6:]
-    used = 6
 
     vers += pkt_ver
     print('ver', pkt_ver)
     print('id', pkt_id)
+    lit = None
     if pkt_id == 4:
         nbits = []
         while len(payload) >= 5:
             group = payload[:5]
             nbits += group[1:]
             payload = payload[5:]
-            used += 5
             if not group[0]:
                 break
-        print(bools_to_num(nbits))
+        lit = bools_to_num(nbits)
+        print('LIT', lit)
     else:
         len_id = payload[0]
         payload = payload[1:]
-        used += 1
         print('len id', len_id)
+        sub_lits = []
         if not len_id:
             sub_len_bits = bools_to_num(payload[:15])
             print('sub len', sub_len_bits, bin(sub_len_bits))
             payload = payload[15:]
-            used += 15
 
             nx_used = 0
-            while len(payload) >= sub_len_bits - nx_used and len(payload) >= 6:
-                new_used = parse_pkt(payload)
+            while sub_len_bits - nx_used >= 6 and len(payload) >= sub_len_bits - nx_used and len(payload) >= 6:
+                print('[] remp', len(payload), ' rem_bits', sub_len_bits - nx_used)
+                new_used, new_lit = parse_pkt(payload)
                 payload = payload[new_used:]
-                used += new_used
                 nx_used += new_used
+
+                if new_lit is not None:
+                    sub_lits += [new_lit]
         else:
             num_subs = bools_to_num(payload[:11])
             print('num subs', num_subs)
             payload = payload[11:]
-            used += 11
 
             for i in range(num_subs):
-                new_used = parse_pkt(payload)
+                if len(payload) < 6:
+                    break
+                new_used, new_lit = parse_pkt(payload)
                 payload = payload[new_used:]
-                used += new_used
+
+                if new_lit is not None:
+                    sub_lits += [new_lit]
+        
+        if pkt_id == 0:
+            lit = sum(sub_lits)
+        elif pkt_id == 1:
+            n = 1
+            for x in sub_lits:
+                n *= x
+            lit = n
+        elif pkt_id == 2:
+            lit = min(sub_lits)
+        elif pkt_id == 3:
+            lit = max(sub_lits)
+        elif pkt_id == 5:
+            lit = int(sub_lits[0] > sub_lits[1])
+        elif pkt_id == 6:
+            lit = int(sub_lits[0] < sub_lits[1])
+        elif pkt_id == 7:
+            lit = int(sub_lits[0] == sub_lits[1])
+        else:
+            print('UNKNOWN PKT', pkt_id)
+            exit()
 
     print('V', vers)
-    return used
-parse_pkt(root_pkt)
+    return orig_len - len(payload), lit
+_, final_num = parse_pkt(root_pkt)
+print('FINAL', final_num)
 
 print(f'Total: {vers}')
 print(f'Result: {result}')
