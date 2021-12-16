@@ -74,36 +74,19 @@ for y in range(len(grid)):
                 graph[node] += [neigh]
 # print(graph)
 
-# heap = []
-# dist = {n: 2147483647 for n in nodes.values()}
-# dist[start_n] = 0
-# for n in nodes.values():
-#     heappush(heap, (dist[n], n))
-# while heap:
-#     w, n = heappop(heap)
-#     for neigh in graph[n]:
-#         neigh_dist = dist[n] + neigh[0]
-#         if dist[neigh] > neigh_dist:
-#             dist[neigh] = neigh_dist
-#             heap
-#             heappush(heap, (dist[neigh], neigh))
-
 heap = []
+dist = {n: 2147483647 for n in nodes.values()}
+dist[start_n] = 0
 heappush(heap, (0, start_n))
-visited = set()
 while heap:
-    dist, n = heappop(heap)
-    if n in visited:
-        continue
-    visited.add(n)
-
-    if n == end_n:
-        break
-
+    w, n = heappop(heap)
     for neigh in graph[n]:
-        neigh_dist = dist + neigh[0]
-        heappush(heap, (neigh_dist, neigh))
-print(dist)
+        neigh_dist = dist[n] + neigh[0]
+        if dist[neigh] > neigh_dist:
+            dist[neigh] = neigh_dist
+            heappush(heap, (dist[neigh], neigh))
+
+print(dist[end_n])
 
 print(f'Total: {total}')
 print(f'Result: {result}')
