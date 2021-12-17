@@ -34,9 +34,10 @@ dy=0
 maxy = -1e10
 brk = False
 
-for dx in range(-250, 250):
+valid = 0
+for dx in range(-200, 200):
     orig_dx = dx
-    for dy in range(-250, 250):
+    for dy in range(-200, 200):
         dx = orig_dx
         orig_dy = dy
         x = 0
@@ -48,20 +49,24 @@ for dx in range(-250, 250):
             #print('x', x, 'y', y)
             x += dx
             y += dy
-            dx = dx + 1 if dx < 0 else dx - 1
+            if dx != 0:
+                dx = dx + 1 if dx < 0 else dx - 1
             dy -= 1
 
             if y > run_maxy:
                 run_maxy = y
             
             if x >= X_MIN and x <= X_MAX and y >= Y_MIN and y <= Y_MAX:
-                print('reached', orig_dx, orig_dy)
+                print(f'{orig_dx},{orig_dy}')
                 brk = True
                 break
+        if brk:
+            valid += 1
         if brk and run_maxy > maxy:
             maxy = run_maxy
 
 print('MAX', maxy)
+print('VALID', valid)
 
 
 print(f'Total: {total}')
