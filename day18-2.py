@@ -216,28 +216,23 @@ reduce_n(n)
 # exit()
 import copy
 
-print(file_lines)
-last_val = file_lines[0]
-for line in file_lines[1:]:
-    new_n = [copy.deepcopy(last_val), copy.deepcopy(line)]
-    print('\nADD', new_n)
-    reduce_n(new_n)
-    print(f'DA:   {last_val}')
-    print(f'DA: + {line}')
-    print(f'DA: = {new_n}')
-    print(f'DA:')
-    last_val = copy.deepcopy(new_n)
-
-
-print('\nLAST', last_val)
-
 def calc_mag(pair):
     if isinstance(pair, int):
         return pair
     else:
         return 3 * calc_mag(pair[0]) + 2* calc_mag(pair[1])
 
-print('\n\nMAG', calc_mag(last_val))
+max_mag = -1
+for l1 in file_lines:
+    for l2 in file_lines:
+        new_val = [copy.deepcopy(l1), copy.deepcopy(l2)]
+        reduce_n(new_val)
+        mag = calc_mag(new_val)
+        print(l1, '+', l2, '=', mag)
+        if mag > max_mag:
+            max_mag = mag
+print('\n\nMAX MAG', max_mag)
+
 print(f'Total: {total}')
 print(f'Result: {result}')
 print(f'Other: {other}')
