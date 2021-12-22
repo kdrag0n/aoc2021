@@ -5,27 +5,32 @@ import sys
 def ints(itr):
     return [int(i) for i in itr]
 
-with open(sys.argv[1], 'r') as f:
-    file_lines = [l for l in f.read().strip().split('\n')]
+STARTS = [7, 8]
+#STARTS = [4,8]
 
-
-in_nums = []
-
-total = 0
-result = 0
-other = 0
-
+die=0
+rolls = 0
+def roll():
+    global die
+    die+=1
+    if die > 100:
+        die = 1
+    return die
+p=0
+p_pos = STARTS
+scores = [0, 0]
 while True:
-    for l in file_lines:
-        l1, l2 = l.split()
+    x = roll() + roll() + roll()
+    rolls += 3
+    pos = (p_pos[p] + x - 1) % 10 + 1
+    scores[p] += pos
+    p_pos[p] = pos
+    print(f'p={p+1}  roll={x}  pos={pos}    sc={scores[p]}')
 
-        if False:
-            total += 1
+    if scores[0] >= 1000 or scores[1] >= 1000:
+        break
+    p=int(not p)
 
-    break
-
-
-
-print(f'Total: {total}')
-print(f'Result: {result}')
-print(f'Other: {other}')
+print('\n')
+lose = sorted(scores)[0]
+print(lose * rolls)
