@@ -167,6 +167,17 @@ for sc in scs:
     for rx, ry, rz in apply_orient(sc.beacons, sc_orients[sc.num]):
         beacons.add((sx + rx, sy + ry, sz + rz))
 print(len(beacons))
+
+maxd = -1
+for sc0 in scs:
+    for sc1 in scs:
+        sc0x, sc0y, sc0z = scs_abs[sc0.num]
+        sc1x, sc1y, sc1z = scs_abs[sc1.num]
+        dist = abs(sc1x - sc0x) + abs(sc1y - sc0y) + abs(sc1z - sc0z)
+        if dist > maxd:
+            maxd = dist
+print('maxd', maxd)
+
 print(f'Total: {total}')
 print(f'Result: {result}')
 print(f'Other: {other}')
