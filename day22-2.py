@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
+import collections
+import itertools
 
 def ints(itr):
     return [int(i) for i in itr]
@@ -26,8 +28,6 @@ while True:
             total += 1
 
     break
-
-import itertools
 
 class Rectangle:
     def intersection(self, other):
@@ -98,30 +98,37 @@ rects = set()
 print(steps)
 grid = set()
 for si, (st, (x0, x1), (y0, y1), (z0, z1)) in enumerate(steps):
-    r = Rectangle(x0, y0, z0, x1, y1, z1)
+    print(si)
+    r = Rectangle(x0, y0, z0, x1 + 1, y1 + 1, z1 + 1)
     if st:
-        pending = []
-        rems = []
-        found = False
-        for r2i, r2 in enumerate(rects):
-            inter = r.intersection(r2)
-            if not inter:
-                continue
-            print('inter', r, r2)
-            print('int', inter)
-            print('diff', [r2.difference(r)))
-            rems += [r2]
-            pending += [inter, *r2.difference(r)]
-            vol = 0
-            for r in r2.difference(r):
-                vol += (r.x2 - r.x1 + 1) * (r.y2 - r.y1 + 1) * (r.z2 - r.z1 + 1)
-            print(vol)
-            found = True
-        if not found:
-            rects.add(r)
-        for r in rems:
-            rects.remove(r)
-        rects.update(pending)
+        new_rs = collections.deque([r])
+        while new_rs:
+            nr = new_rs.popleft()
+            pending_inter = None
+            rems = []
+            found = False
+            for r2i, r2 in enumerate(rects):
+                inter = nr.intersection(r2)
+                if not inter:
+                    continue
+                # print('inter', nr, r2)
+                # print('int', inter)
+                diff = list(r2.difference(nr)) + list(nr.difference(r2))
+                # print('diff', diff)
+                rems += [r2]
+                pending_inter = inter
+                new_rs.extend(diff)
+                # vol = 0
+                # for nr in r2.difference(nr):
+                    # vol += (nr.x2 - nr.x1) * (nr.y2 - nr.y1) * (nr.z2 - nr.z1)
+                # print(vol)
+                found = True
+            if not found:
+                rects.add(nr)
+            for r in rems:
+                rects.remove(r)
+            if pending_inter is not None:
+                rects.add(pending_inter)
     else:
         pending = []
         rems = []
@@ -136,8 +143,10 @@ for si, (st, (x0, x1), (y0, y1), (z0, z1)) in enumerate(steps):
         for r in rems:
             rects.remove(r)
         rects.update(pending)
-    if si == 1:
-        break
+    # vol = 0
+    # for r in rects:
+    #     vol += (r.x2 - r.x1) * (r.y2 - r.y1) * (r.z2 - r.z1)
+    # print(vol)
     # for rx0, rx1, ry0, ry1, rz0, rz1 in on_regs:
     #     if x0 >= rx0 and x1 <= rx1 and y0 >= ry0 and y1 <= ry1 and z0 >= rz0 and z1 <= rz1:
     #         # completely included
@@ -156,32 +165,32 @@ for si, (st, (x0, x1), (y0, y1), (z0, z1)) in enumerate(steps):
     #                 grid.remove((x, y, z))
     # break
 
-inters = 1
-while inters > 0:
-    inters = 0
-    pending = []
-    rems = []
-    for r in rects:
-        for r2 in rects:
-            if r == r2:
-                continue
-            inter = r.intersection(r2)
-            if inter:
-                print('inter', r, r2)
-                inters += 1
-                #union
-                pending += [inter, *r2.difference(r)]
-                rems += [r, r2]
-    for r in rems:
-        if r in rects:
-            rects.remove(r)
-    rects.update(pending)
+# inters = 1
+# while inters > 0:
+#     inters = 0
+#     pending = []
+#     rems = []
+#     for r in rects:
+#         for r2 in rects:
+#             if r == r2:
+#                 continue
+#             inter = r.intersection(r2)
+#             if inter:
+#                 print('inter', r, r2)
+#                 inters += 1
+#                 #union
+#                 pending += [inter, *r2.difference(r)]
+#                 rems += [r, r2]
+#     for r in rems:
+#         if r in rects:
+#             rects.remove(r)
+#     rects.update(pending)
 
 
 print(rects)
 vol = 0
 for r in rects:
-    vol += (r.x2 - r.x1 + 1) * (r.y2 - r.y1 + 1) * (r.z2 - r.z1 + 1)
+    vol += (r.x2 - r.x1) * (r.y2 - r.y1) * (r.z2 - r.z1)
 print(vol)
 print(f'Total: {total}')
 print(f'Result: {result}')
